@@ -18,7 +18,12 @@ func Bundle(input BundlerInput) (string, error) {
 		return "", validateErr
 	}
 
-	bundle := buildBundle(input.Modules)
+	sorted, sortErr := sortModules(input.Modules)
+	if sortErr != nil {
+		return "", sortErr
+	}
+
+	bundle := buildBundle(sorted)
 
 	bundle += fmt.Sprintf(`
 

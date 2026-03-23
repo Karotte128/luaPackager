@@ -2,11 +2,11 @@ package bundler
 
 import "fmt"
 
-func buildBundle(modules map[string]Module) string {
+func buildBundle(modules []sortedModule) string {
 	var wrappedSource string
 
-	for name, module := range modules {
-		wrappedSource += wrapModule(name, module.Source)
+	for _, module := range modules {
+		wrappedSource += wrapModule(module.Name, module.Source)
 	}
 
 	return wrappedSource
