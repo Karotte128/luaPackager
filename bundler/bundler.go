@@ -26,9 +26,8 @@ func Bundle(input BundlerInput) (string, error) {
 	bundle := buildBundle(sorted)
 
 	bundle += fmt.Sprintf(`
-
-	-- ENTRYPOINT
-	require("%s")`, input.Entry)
+-- ENTRYPOINT
+require("%s")`, input.Entry)
 
 	return bundle, nil
 }

@@ -1,4 +1,4 @@
-package luapackager
+package integrationtest
 
 import (
 	"errors"
