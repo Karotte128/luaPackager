@@ -35,7 +35,7 @@ func (p *parser) parseModule(name string) error {
 
 	p.modules[name] = bundler.Module{
 		Source:   src,
-		Requires: requires,
+		Requires: internalDeps,
 	}
 
 	for _, dep := range internalDeps {
