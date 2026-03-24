@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/karotte128/luapackager/bundler"
 )
@@ -23,21 +24,35 @@ func (p *parser) parseModule(name string) error {
 		return fmt.Errorf("module %q: lookup failed: %w", name, err)
 	}
 
-	requires, err := extractRequires(src)
-	if err != nil {
-		return fmt.Errorf("module %q: %w", name, err)
+	externals := extractExternals(src)
+
+	requires, extractErr := extractRequires(src)
+	if extractErr != nil {
+		return fmt.Errorf("module %q: %w", name, extractErr)
 	}
+
+	internalDeps := subtractDeps(requires, externals)
 
 	p.modules[name] = bundler.Module{
 		Source:   src,
 		Requires: requires,
 	}
 
-	for _, dep := range requires {
+	for _, dep := range internalDeps {
 		if err := p.parseModule(dep); err != nil {
 			return err
 		}
 	}
 
 	return nil
+}
+
+func subtractDeps(all []string, externals []string) []string {
+	result := make([]string, 0, len(all))
+	for _, dep := range all {
+		if !slices.Contains(externals, dep) {
+			result = append(result, dep)
+		}
+	}
+	return result
 }
